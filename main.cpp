@@ -15,88 +15,94 @@ typedef vector<int> vi;
 typedef vector<ll> vll; 
 typedef vector<pair<int,int>> vii; 
 
-// Interface del comando 
-class Command
-{
-public:
+class Command {
+  public:
+	virtual ~Command()= default;
 	virtual void execute() = 0;
 };
- 
-// la clase Receiver 
-class Light 
-{
-public:
-	void on() {
-		cout << "The light is on\n";
-	}
-	void off() {
-		cout << "The light is off\n";
-	}
-}; 
 
-// Command para prender la luz
-class LightOnCommand : public Command 
-{
-  Light *mLight;
-public:
-        LightOnCommand(Light *light) : mLight(light) {}
+class Light{
+    private:
+	string name;
+	double luminosity;
+	bool status;
+	public:
+	Light(string _name){
+		name=_name;
+		luminosity=0.0;
+		status=0;
+	}
+	void setLuminosity(double x){
+		luminosity=x;
+	}
+	double getLuminosity(){
+		return luminosity;
+	}
+	void on(){
+		status=1;
+	}
+	void off(){
+		status=0;
+	}
+	bool isOn(){
+		return status;
+	}
+
+};
+
+
+class LuminosityCommand: public Command {
+    private:
+	Light* light;
+	double luminosity;
+	public:
+	LuminosityCommand(Light* _light, double _luminosity): light(_light) , luminosity(_luminosity) {}
 	void execute(){
-		mLight->on();
-	}	
+		light->setLuminosity(luminosity);
+	}
+
+
 };
- 
-// Command para apagar la luz
-class LightOffCommand : public Command 
-{
-  Light *mLight;
-public:
-        LightOffCommand(Light *light) :mLight(light){}
+
+
+class RemoteControl{
+	private:
+	Command* cd;
+	RemoteControl* remotecontrol;
+    public:
+	void setCommand(Command* c){
+        cd=c;
+	}
 	void execute(){
-		mLight->off();
+		cd->execute();
 	}
+	RemoteControl* getInstance(){
+		if(remotecontrol==nullptr){
+			remotecontrol= new RemoteControl();
+		}
+		return remotecontrol;
+	}
+	
+	
 };
 
-// Invoker que vendría a ser el RemoteControl
-class RemoteControl 
-{
-  Command *mCmd;
-public:
-	void setCommand(Command *cmd) {
-		mCmd = cmd;
-	}
 
-	void buttonPressed() {
-		mCmd->execute();
-	} 
-};
- 
-// El cliente
-int main() 
-{
-	// Receiver 
-	Light *light = new Light;
 
-	// objetos de comando concretos
-	LightOnCommand *lightOn = new       
-  LightOnCommand(light);
-	LightOffCommand *lightOff = new         
-  LightOffCommand(light);
 
-	// objeto invoker
-	RemoteControl *control = new RemoteControl;
+int main() {
+    fastio;
+    RemoteControl* remotecontrol =new RemoteControl;
+	Light* orangelight =new Light("orange");
+	LuminosityCommand* luminosityCommand = new LuminosityCommand(orangelight,20);
+	remotecontrol->setCommand(luminosityCommand);
 
-	// execute
-	control->setCommand(lightOn);
-	control->buttonPressed();
-	control->setCommand(lightOff);
-	control->buttonPressed();
 
-	delete light, lightOn, lightOff, control;
 
-	return 0;
+    
+    
+    
+    	
 }
-
-
 
 
 
