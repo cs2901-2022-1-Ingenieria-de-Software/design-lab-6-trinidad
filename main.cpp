@@ -95,7 +95,8 @@ int main() {
 	Light* orangelight =new Light("orange");
 	LuminosityCommand* luminosityCommand = new LuminosityCommand(orangelight,20);
 	remotecontrol->setCommand(luminosityCommand);
-
+	luminosityCommand->execute();
+    cout<<orangelight->getLuminosity();
 
 
     
