@@ -15,8 +15,104 @@ typedef vector<int> vi;
 typedef vector<ll> vll; 
 typedef vector<pair<int,int>> vii; 
 
+// Interface del comando 
+class Command
+{
+public:
+	virtual void execute() = 0;
+};
+ 
+// la clase Receiver 
+class Light 
+{
+public:
+	void on() {
+		cout << "The light is on\n";
+	}
+	void off() {
+		cout << "The light is off\n";
+	}
+}; 
 
-class LightDevices{
+// Command para prender la luz
+class LightOnCommand : public Command 
+{
+  Light *mLight;
+public:
+        LightOnCommand(Light *light) : mLight(light) {}
+	void execute(){
+		mLight->on();
+	}	
+};
+ 
+// Command para apagar la luz
+class LightOffCommand : public Command 
+{
+  Light *mLight;
+public:
+        LightOffCommand(Light *light) :mLight(light){}
+	void execute(){
+		mLight->off();
+	}
+};
+
+// Invoker que vendría a ser el RemoteControl
+class RemoteControl 
+{
+  Command *mCmd;
+public:
+	void setCommand(Command *cmd) {
+		mCmd = cmd;
+	}
+
+	void buttonPressed() {
+		mCmd->execute();
+	} 
+};
+ 
+// El cliente
+int main() 
+{
+	// Receiver 
+	Light *light = new Light;
+
+	// objetos de comando concretos
+	LightOnCommand *lightOn = new       
+  LightOnCommand(light);
+	LightOffCommand *lightOff = new         
+  LightOffCommand(light);
+
+	// objeto invoker
+	RemoteControl *control = new RemoteControl;
+
+	// execute
+	control->setCommand(lightOn);
+	control->buttonPressed();
+	control->setCommand(lightOff);
+	control->buttonPressed();
+
+	delete light, lightOn, lightOff, control;
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*class LightDevices{
 	public:
     string name;
 	bool status;
@@ -65,6 +161,12 @@ class RemoteControl{
 	
 };
 
+class Command {
+ public:
+  virtual ~Command() {
+  }
+  virtual void Execute() const = 0;
+};
 
 
 
@@ -80,8 +182,5 @@ int main() {
     //rc->getInstance();
     auto x = rc->makeLight("orange");
     cout<<x->status<<endl;
-    
-    
-    
-    	
 }
+*/
